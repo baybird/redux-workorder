@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import $ from 'jquery';
 
 class Dialog extends Component{
-  constructor(props){
-    super(props);
+  getInitialState(){
 
     var that = this;
 
@@ -22,6 +21,7 @@ class Dialog extends Component{
       })
     }
 
+    return {};
   }
 
   closeDialog(){
@@ -79,8 +79,14 @@ class Dialog extends Component{
     }
   }
 
+  // Called after rendering.
+  componentDidMount(){
+    //console.log('Did mount');
+    this.openDialog();
+  }
+
   render() {
-    //console.log(this.props);
+    console.log(this.props);
 
     var prioritys = ['Low','Medium', 'High'];
     var status    = ['Active','Closed','On hold'];

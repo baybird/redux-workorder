@@ -38,7 +38,3 @@ Precompiling JSX
 babel --presets es2015,react --watch www/src/ --out-dir www/js
 ```
 
-## Demo
-http://54.244.172.209/ 
-
-For the best experience, recommend using the latest version of Chrome or Firefox.

@@ -22,6 +22,10 @@ $ npm install
 Start server
 ```bash
 $ nodemon server.js
+
+OR 
+
+$ npm start
 ```
 
 Open

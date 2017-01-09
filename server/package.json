@@ -1,0 +1,36 @@
+{
+  "name": "MERN",
+  "version": "1.0.0",
+  "description": "Test project for using MongoDB, Express, React and Node.JS",
+  "main": "main.js",
+  "author": "Robert",
+  "license": "ISC",
+  "private": true,
+  "babel": {
+    "presets": [
+      "es2015",
+      "stage-0"
+    ]
+  },
+  "dependencies": {
+    "babel-cli": "6.14.0",
+    "babel-core": "6.14.0",
+    "babel-preset-es2015": "6.14.0",
+    "babel-preset-stage-0": "6.5.0",
+    "body-parser": "^1.15.2",
+    "console-polyfill": "^0.2.2",
+    "es5-shim": "^4.5.9",
+    "express": "^4.14.0",
+    "mongodb": "^2.2.9",
+    "mongoskin": "^2.1.0",
+    "multer": "^1.2.0",
+    "pug": "^2.0.0-beta6",
+    "socket.io": "^1.4.8",
+    "underscore": "^1.8.3"
+  },
+  "scripts": {
+    "start": "npm run server",
+    "server": "babel-node server.js",
+    "dev": "echo \"This command has been deprecated. Use 'npm start'\" && exit 1"
+  }
+}

@@ -12,7 +12,7 @@ class List extends Component {
     }
 
     apiGetList(keyword, status, sortingKey, sortingOrder) {
-        console.log('call api');
+        //console.log('call api');
 
         // Setting default values
         // By doing it on this way is to suppoert the compatibility in IE

@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
+import { render } from 'react-dom';
 import $ from 'jquery';
+
+import Dialog from './dialog.jsx'
 
 class List extends Component {
     constructor(props) {
@@ -39,13 +42,9 @@ class List extends Component {
         }
 
         this.serverRequest = $.get(apiUrl, function (result) {
-
-
           this.setState({
             items: result
           });
-
-          console.log(this.state);
         }.bind(this));
 
 
@@ -91,8 +90,9 @@ class List extends Component {
       }
     }
 
-    updateOrder(id){
-      //render(<Dialog orderId = {id} apiGetList={this.apiGetList} />, document.getElementById('dialog_area'));
+    updateOrder(e, id){
+      console.log('update');
+      render(<Dialog orderId={id} apiGetList={this.apiGetList} />, document.getElementById('dialog_area'));
     }
 
     // Called before rendering on both server and client side.
@@ -157,7 +157,7 @@ class List extends Component {
                   <td>{item.subject}</td>
                   <td>{item.duration}</td>
                   <td>{typeof item.status==='undefined'?'':item.status.charAt(0).toUpperCase() + item.status.slice(1)} </td>
-                  <td><button type="button" onClick={that.updateOrder.bind(null, item._id)} className="btn btn_small">Modify</button></td>
+                  <td><button type="button" onClick={ e=> that.updateOrder(e, item._id)} className="btn btn_small">Modify</button></td>
                 </tr>
               )
             })

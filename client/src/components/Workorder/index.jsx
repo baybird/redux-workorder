@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
-//import { render } from 'react-dom';
+import { render } from 'react-dom';
+
 import WorkList from './list.jsx'
+import Dialog from './dialog.jsx'
 
 class WorkOrder extends Component{
   constructor(props){
@@ -27,13 +29,13 @@ class WorkOrder extends Component{
   }
 
   addNew(){
-    //console.log('render dialog');
-    /*
+    console.log('render dialog');
+
     render(
       <Dialog apiGetList={this.refs.worklist.apiGetList} />,
       document.getElementById('dialog_area')
     );
-    */
+
   }
 
   render(){
@@ -41,16 +43,16 @@ class WorkOrder extends Component{
       <div>
         <nav>
           <div style={{width:"100%"}}>
-            <input ref="keyword" type="text" name="keyword" id="keyword" placeholder="Searching work orders" autoComplete="off" className="input_keyword" onChange={this.search} />
+            <input ref="keyword" type="text" name="keyword" id="keyword" placeholder="Searching work orders" autoComplete="off" className="input_keyword" onChange={e => this.search(e)} />
             <div id="dropdown">
-              <select onChange={this.search} ref="selected_status">
+              <select onChange={e=>this.search(e)} ref="selected_status">
                 <option>All</option>
                 <option>Active</option>
                 <option>Closed</option>
                 <option>On hold</option>
               </select>
             </div>
-            <button type="button" id="btn_new" onClick={this.addNew} className='btn'>New</button>
+            <button type="button" id="btn_new" onClick={e => this.addNew(e)} className='btn'>New</button>
           </div>
         </nav>
         <WorkList ref="worklist" keyword={this.state.keyword} order_status={this.state.order_status} />

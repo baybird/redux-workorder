@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import { render } from 'react-dom';
 
-import WorkList from './list.jsx'
-import Dialog from './dialog.jsx'
+import WorkList from '../../containers/contWorkList.js'
+import Dialog from '../../containers/contDialog.js'
+import {dialogOpenOrder, search} from '../../actions/workorder.js'
 
 class WorkOrder extends Component{
   constructor(props){
@@ -14,28 +14,16 @@ class WorkOrder extends Component{
     };
   }
 
-  search(){
+  search(e){
     var keyword = this.refs.keyword.value;
     var status  = this.refs.selected_status.value.toLowerCase();
-    //console.log('status:'+ status);
-
-    this.setState({
-      keyword: keyword,
-      order_status: status
-    });
-
-    // Call getListApi in worklist component
-    this.refs.worklist.apiGetList(keyword, status);
+    // console.log("1) search: "+keyword+ ", "+status);
+    this.props.dispatch(search(keyword, status));
   }
 
   addNew(){
-    console.log('render dialog');
-
-    render(
-      <Dialog apiGetList={this.refs.worklist.apiGetList} />,
-      document.getElementById('dialog_area')
-    );
-
+    // console.log('add new - open dialog');
+    this.props.dispatch(dialogOpenOrder());
   }
 
   render(){
@@ -55,11 +43,11 @@ class WorkOrder extends Component{
             <button type="button" id="btn_new" onClick={e => this.addNew(e)} className='btn'>New</button>
           </div>
         </nav>
-        <WorkList ref="worklist" keyword={this.state.keyword} order_status={this.state.order_status} />
-        <div id="dialog_area"/>
+        <WorkList ref="worklist" />
+        <Dialog />
       </div>
     );
   }
 };
 
-export default WorkOrder;
+export default WorkOrder

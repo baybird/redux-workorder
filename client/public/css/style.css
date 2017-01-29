@@ -14,6 +14,7 @@ html{
 body {
   margin: 0 auto;
   padding: 0;
+  overflow-y: scroll;
 }
 header{
   border-bottom: 1px solid #ccc;
@@ -269,7 +270,7 @@ select{
   color: #fff;
   font-weight: 500;
   background: #2F7EB2;
-  text-align: left;  
+  text-align: left;
 }
 .list th,
 .list td{
@@ -306,7 +307,7 @@ select{
 .list th:nth-child(6){
   width: 10%;
 }
-.list tr:nth-child(odd){ 
+.list tr:nth-child(odd){
   background: #F4F3F3;
 }
 .list tr:nth-child(even){
@@ -315,5 +316,5 @@ select{
 
 /****************** Contact page**********************/
 .description {
-  padding: 2em;  
+  padding: 2em;
 }

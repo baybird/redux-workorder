@@ -1,10 +1,9 @@
 import { combineReducers } from 'redux';
-
-import changeBackground from './changeBackground';
+import workorder from './workorder.js';
 
 
 const rootReducer = combineReducers({
-  changeBackground
+  workorder
 });
 
 export default rootReducer;

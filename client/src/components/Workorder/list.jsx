@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
-import { render } from 'react-dom';
 import $ from 'jquery';
 
-import Dialog from './dialog.jsx'
+import {dialogOpenOrder, REFRESH_ORDER_LIST, SEARCH_ORDER } from '../../actions/workorder.js';
+
+// import Dialog from '../../containers/contDialog.js'
 
 class List extends Component {
     constructor(props) {
       super(props);
+
+      this.openOrder = this.openOrder.bind(this)
 
       this.state = {
         items: [],
@@ -15,7 +18,8 @@ class List extends Component {
     }
 
     apiGetList(keyword, status, sortingKey, sortingOrder) {
-        //console.log('call api');
+        // console.log('*** api called for worklist');
+
 
         // Setting default values
         // By doing it on this way is to suppoert the compatibility in IE
@@ -46,8 +50,6 @@ class List extends Component {
             items: result
           });
         }.bind(this));
-
-
     }
 
     sort(field){
@@ -90,18 +92,33 @@ class List extends Component {
       }
     }
 
-    updateOrder(e, id){
-      console.log('update');
-      render(<Dialog orderId={id} apiGetList={this.apiGetList} />, document.getElementById('dialog_area'));
+    openOrder(e, id){
+      //console.log('0) UI send an action' );
+      this.props.dispatch(dialogOpenOrder(id));
+      //render(<Dialog orderId={id}/>, document.getElementById('dialog_area'));
     }
 
+    componentWillReceiveProps(nextProps)
+    {
+      console.log('0) componentWillReceiveProps' );
+      console.log(nextProps);
+
+      if (nextProps.type === REFRESH_ORDER_LIST) {
+        this.apiGetList();
+      }else if (nextProps.type === SEARCH_ORDER) {
+        // console.log('call api');
+        this.apiGetList(nextProps.keyword, nextProps.status);
+      }
+    }
     // Called before rendering on both server and client side.
     componentWillMount(){
+      //console.log('*** worklist will mount');
       this.apiGetList();
     }
 
     render(){
-        //return React.createElement('div', null, `Hello ${this.props.who}`);
+      // console.log("*** worklist render");
+      // console.log(this.props);
 
       var sortingOrderTicket    = (<i className="fa fa-sort" aria-hidden="true"></i>);
       var sortingOrderPriority  = (<i className="fa fa-sort" aria-hidden="true"></i>);
@@ -148,7 +165,6 @@ class List extends Component {
           </thead>
           <tbody>
           {
-
             this.state.items.map(function(item, key){
               return (
                 <tr key={key} >
@@ -157,7 +173,7 @@ class List extends Component {
                   <td>{item.subject}</td>
                   <td>{item.duration}</td>
                   <td>{typeof item.status==='undefined'?'':item.status.charAt(0).toUpperCase() + item.status.slice(1)} </td>
-                  <td><button type="button" onClick={ e=> that.updateOrder(e, item._id)} className="btn btn_small">Modify</button></td>
+                  <td><button type="button" onClick={ (e) => that.openOrder(e, item._id.toString())} className="btn btn_small">Modify</button></td>
                 </tr>
               )
             })
@@ -167,5 +183,6 @@ class List extends Component {
       );
     }
 }// end class
+
 
 export default List;

@@ -2,7 +2,7 @@
     box-sizing: border-box;
 }
 html{
-  font-family: 'Source Sans Pro', sans-serif;
+
 }
 .selector-for-some-widget {
   -webkit-box-sizing: content-box;
@@ -15,11 +15,15 @@ body {
   margin: 0 auto;
   padding: 0;
   overflow-y: scroll;
+  /*font-family: 'Cambay', sans-serif;*/
+  font-family: 'Marmelad', serif;
+  font-size: 14px;
 }
-header{
-  border-bottom: 1px solid #ccc;
-  padding: 1em 0;
-  text-align: center;
+header {
+    border-bottom: 1px solid #F2F2F2;
+    overflow: hidden;
+    padding: 10px 50px;
+    text-align: center;
 }
 nav{
   padding: 2em 0;
@@ -30,7 +34,7 @@ nav div{
 }
 main {
   margin: 0 auto;
-  min-height: 580px;
+  min-height: 780px;
   min-width: 1000px;
   width: 80%;
 }
@@ -44,16 +48,24 @@ footer {
 table{
   width: 100%
 }
-h1{
-  font-size: 28px;
-  color: #ccc;
+h1 {
+    color: #4b4b4b;
+    float: left;
+    font-size: 28px;
+    margin: 0;
 }
 h2{
   font-size:18px;
 }
-a{
-  text-decoration: none;
+a {
+    color: #5b5b5b;
+    text-decoration: none;
 }
+a:hover {
+    color: #7E9BEF;
+    text-decoration: none;
+}
+
 input,button, select{
   border: 1px solid #ccc;
   margin: 1px;
@@ -62,14 +74,14 @@ button{
   cursor: pointer;
 }
 .menu {
-    width: 300px;
-    margin: 0 auto;
+    float: right;
+    margin: 8px 0 0;
     overflow: hidden;
 }
 .menu li {
     float: left;
-    width: 50%;
     list-style-type: none;
+    padding: 0 17px 0 0;
 }
 .btn {
     background-color: #428bca;
@@ -108,7 +120,7 @@ input,
 select{
   border-radius: 5px;
   font-size: 16px;
-  padding: 15px;
+  padding: 8px;
   width: 100%;
 }
 /****************** Chat Window ********************/
@@ -243,9 +255,7 @@ select{
 #dialog_body input, #dialog_body select{
   width: auto;
 }
-.caption{
-  font-weight: bold;
-}
+
 
 /****************** Prograss bar *******************/
 .prograssBar {
@@ -317,4 +327,35 @@ select{
 /****************** Contact page**********************/
 .description {
   padding: 2em;
+}
+/****************** Account *********************/
+.singup{
+  color: green;
+}
+.center-box{
+  min-height: 500px;
+  overflow: hidden;
+  text-align: center;
+  padding: 10% 0;
+  letter-spacing: 1px;
+}
+.signup-box{
+  width: 500px;
+  margin: 0 auto;
+  text-align: left;
+  border: 1px solid #ccc;
+  padding: 22px 90px 105px;
+  border-radius: 7px;
+}
+.caption{
+  color: #555;
+  padding: 10px 5px 2px 5px;
+}
+.button-box{
+  padding:10px 0;
+}
+.signup-box #msg{
+  padding: 5px;
+  font-size: 0.9em;
+  color: #55638a;
 }

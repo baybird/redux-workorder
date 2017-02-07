@@ -100,8 +100,8 @@ class List extends Component {
 
     componentWillReceiveProps(nextProps)
     {
-      console.log('0) componentWillReceiveProps' );
-      console.log(nextProps);
+      // console.log('0) componentWillReceiveProps' );
+      // console.log(nextProps);
 
       if (nextProps.type === REFRESH_ORDER_LIST) {
         this.apiGetList();

@@ -17,6 +17,11 @@ const store = configureStore();
 import App from './components/App.jsx';
 import WorkOrder from './containers/contWorkorder.js';
 import Description from './components/Description/index.jsx';
+import requireAuthentication from './components/AuthenticatedComponent.js';
+import Account from './components/Account/index.jsx'
+
+// import {ProtectedView} from './views/ProtectedView.js';
+// <Route path="protected" component={requireAuthentication(ProtectedView)}/>
 
 render(
   <Provider store={store}>
@@ -24,8 +29,10 @@ render(
       <Router history={browserHistory}>
           <Route path="/" component={App} >
             <IndexRoute component={WorkOrder} />
-            <Route path="Description" component={Description}/>
-            <Route  path="Workorder" component={WorkOrder} />
+            <Route path="Workorder" component={WorkOrder} />
+            <Route path="About" component={Description}/>
+            <Route path="/Account" component={requireAuthentication(Account)} />
+            <Route path="/Account/:action" component={Account} />
           </Route>
       </Router>
     </div>

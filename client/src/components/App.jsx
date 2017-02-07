@@ -6,20 +6,18 @@ class App extends Component {
     return (
       <div>
           <header>
-            <h1>Redux</h1>
-            <div className="header">
-              <ul className="menu">
-                <li><Link to="/Workorder">App</Link></li>
-                <li><IndexLink to="/Description">Description</IndexLink></li>
-              </ul>
-            </div>
+            <h1><Link to="/Workorder">Workorder</Link></h1>
+            <ul className="menu">
+              <li><IndexLink to="/Account">Account</IndexLink></li>
+              <li><IndexLink to="/Account/signup" className="signup">Sign up</IndexLink></li>
+            </ul>
           </header>
           <main>
             {this.props.children}
           </main>
           <footer>
-            <p>Powered by Redux with Node JS, Express, React, MongoDB</p>
-            <p>R.T. @ 2017</p>
+            <p>Powered by Node JS, Express, React, Redux, MongoDB and Redis</p>
+            <p>R.T. @ 2016-2017</p>
           </footer>
       </div>
     );

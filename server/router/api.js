@@ -10,23 +10,22 @@ var func = require('../libs/functions');
 
 // Using MongoDB
 var db = require( '../libs/mongo' );
-var collection = db.collection('works');
+var work_collection = db.collection('works');
+var user_collection = db.collection('users');
 var ObjectID = require('mongodb').ObjectID;
 
 // Get one order
 router.get('/get/:id', function(req, res, next) {
-
   var oid = new ObjectID(req.params.id);
 
-  collection.findOne({_id:oid}, function(err, order) {
+  work_collection.findOne({_id:oid}, function(err, order) {
       if (err) {
         throw err;
       }
       res.send(order);
-    })
+  })
 
 });
-
 
 // Query all orders
 router.get('/:status/:sortingKey/:sortingOrder', function(req, res, next) {
@@ -46,12 +45,12 @@ router.get('/:status/:sortingKey/:sortingOrder', function(req, res, next) {
   }
 
 
-  collection.find(query).sort(sorting).toArray(function(err, result) {
+  work_collection.find(query).sort(sorting).toArray(function(err, result) {
     if (err) {
       throw err;
     }
 
-    // Init database
+    // Init. database
     if (result.length==0 && req.params.status.toLowerCase() == 'all') {
       var data = [
         {
@@ -69,7 +68,7 @@ router.get('/:status/:sortingKey/:sortingOrder', function(req, res, next) {
       ];
 
 
-      collection.insert(data);
+      work_collection.insert(data);
 
       result = data;
     }
@@ -90,14 +89,14 @@ router.get('/:status/:sortingKey/:sortingOrder/:keyword', function(req, res, nex
   if (req.params.keyword) {
     query["subject"] = new RegExp(req.params.keyword, 'i');
   }
-  
+
 
   if (req.params.status.toLowerCase() !='all') {
     query["status"] = req.params.status.toLowerCase();
   }
 
 
-  collection.find(query).toArray(function(err, result) {
+  work_collection.find(query).toArray(function(err, result) {
     if (err) {
       throw err;
     }
@@ -137,7 +136,7 @@ router.post('/insert', function(req, res, next){
     reMessage = "Done.";
     reStatus = true;
 
-    collection.insert({subject: subject, priority: priority, status: status, created_at: create_at}); 
+    work_collection.insert({subject: subject, priority: priority, status: status, created_at: create_at});
   }
 
   var ret = {status: reStatus, message: reMessage};
@@ -153,17 +152,17 @@ router.put('/update', function(req, res, next){
   var reStatus = false;
   var reMessage;
 
-  var id      = req.body.id; 
+  var id      = req.body.id;
   var subject = req.body.subject;
   var priority= req.body.priority;
   var status  = req.body.status;
 
 
-  //collection.update({_id:ObjectId("57cb21713e0be145dcc2058d")},{$set:{'subject':'New MongoDB Tutorial'}})
+  //work_collection.update({_id:ObjectId("57cb21713e0be145dcc2058d")},{$set:{'subject':'New MongoDB Tutorial'}})
 
   if(id=""){
     reMessage = "Invalid order ID.";
-    reStatus  = false; 
+    reStatus  = false;
   }else if(subject==''){
     reMessage = "Please enter a subject.";
     reStatus  = false;
@@ -187,7 +186,7 @@ router.put('/update', function(req, res, next){
     reStatus  = true;
 
 
-    collection.update(
+    work_collection.update(
         { "_id": oid },
         { $set:  data},
         function (err, documents) {
@@ -198,12 +197,93 @@ router.put('/update', function(req, res, next){
           //var ret = {status: reStatus, message: reMessage};
           //res.send(ret);
         }
-    );   
-    
+    );
+
   }
 
   var ret = {status: reStatus, message: reMessage};
   res.send(ret);
 
 });
+
+// Create new account
+router.post('/signup', function(req, res, next){
+  var date = new Date();
+
+  var reStatus = false;
+  var reMessage;
+
+  var username = req.body.username;
+  var password = req.body.password;
+  var status   = 1;
+  var create_at= date.toString();
+
+  function response(res, reStatus, reMessage){
+    var ret = {status: reStatus, message: reMessage};
+    res.send(ret);
+  }
+  // test session
+  // console.log(req.session.token);
+  // if (typeof req.session.token != undefined){
+  //   req.session.token++;
+  // }else{
+  //   req.session.token = 0
+  // }
+  // console.log(req.session.token);
+  // console.log('req.session.token');
+
+  if(username==''){
+    reMessage = "Please enter a username.";
+    reStatus  = false;
+    response(res, reStatus, reMessage)
+  }else if(password==''){
+    reMessage = "Please select a password.";
+    reStatus  = false;
+
+    response(res, reStatus, reMessage)
+  }else{
+    var query = {
+      username: username
+    };
+
+    var r = user_collection.find(query).toArray((err, items)=>{
+      if (err){
+        throw err;
+      }
+
+      let count = 0;
+      for (var key in items) {
+        count++;
+      }
+
+      if (count==0) {
+        user_collection.insert({username: username, password: password, status: status, created_at: create_at});
+        reMessage = "Done.";
+        reStatus = true;
+        req.session.token = 1;
+        response(res, reStatus, reMessage);
+      }else{
+        reMessage = "Username already taken.";
+        reStatus = false;
+        response(res, reStatus, reMessage);
+      }
+    });
+  }
+});
+
+// Create new account
+router.get('/checkauth', function(req, res, next){
+  // test session
+  // console.log(req.session.token);
+  // if (typeof req.session.token != undefined){
+  //   req.session.token++;
+  // }else{
+  //   req.session.token = 0
+  // }
+  console.log(req.session.token);
+  console.log('req.session.token');
+  // res.send(req.session.token);
+  res.send({token:1});
+});
+
 module.exports = router;

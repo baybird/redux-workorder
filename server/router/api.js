@@ -1,7 +1,7 @@
 // Create instance of express
 var express = require('express');
 
-// Create instance of express router
+// instantiate express router
 var router = express.Router();
 
 // requiure js function file

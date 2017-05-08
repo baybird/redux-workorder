@@ -42,3 +42,7 @@ Precompiling JSX
 babel --presets es2015,react --watch www/src/ --out-dir www/js
 ```
 
+Set env
+```
+export hostname = 'www.sample.com';
+

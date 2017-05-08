@@ -1,33 +1,48 @@
+// Express is a minimal and flexible Node.js web application framework that provides
+// a robust set of features for web and mobile applications.
 var express = require("express");
-var cors = require('cors'); // providing a Connect/Express middleware that can be used to enable CORS with various options.
-var session = require('express-session')
-// var sessionstore = require('sessionstore'); // Because using Redis as session store
-var RedisStore = require('connect-redis')(session);
-var parseurl = require('parseurl')
-
 var app = express();
-var server = require('http').Server(app);
+
+// providing a Connect/Express middleware that can be used to enable CORS with various options.
+// CORS - Cross-origin resource sharing
+var cors    = require('cors');
 app.use(cors());
 
+// ExpressJS/Mongoose Session Storage
+var session = require('express-session')
+// var sessionstore = require('sessionstore'); // Because using Redis as session store
+
+var RedisStore = require('connect-redis')(session);
+
+// Parse a URL with memoization.
+var parseurl = require('parseurl')
+
+// use HTTP server
+var server = require('http').Server(app);
 
 // Parse post paramaters. Contains key-value pairs of data submitted
 // in the request body. By default, it is undefined, and is populated
 // when you use body-parsing middleware such as body-parser and multer.
 var bodyParser = require('body-parser');
-var multer = require('multer');
-var upload = multer(); // for parsing multipart/form-data
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
+// Multer is a node.js middleware for handling multipart/form-data, which is primarily
+// used for uploading files. It is written on top of busboy for maximum efficiency.
+var multer = require('multer');
+var upload = multer(); // for parsing multipart/form-data
 
-var es5Shim = require('es5-shim');
-var es5Sham = require('es5-shim/es5-sham');
-var consolePolyfill = require('console-polyfill');
+// es5-shim.js and es5-shim.min.js monkey-patch a JavaScript
+// context to contain all EcmaScript 5 methods that can be
+// faithfully emulated with a legacy JavaScript engine.
+// var es5Shim = require('es5-shim');
+// var es5Sham = require('es5-shim/es5-sham');
 
-
+// Browser console polyfill. Makes it safe to do console.log()-s etc always.
+// var consolePolyfill = require('console-polyfill');
 
 // Using Redis
-const redis_client  = require('./libs/redis.js');
+// const redis_client  = require('./libs/redis.js');
 // Test it
 // redis_client.set('color', 'red');
 // redis_client.get('color', (err, value)=>{
@@ -39,21 +54,21 @@ const redis_client  = require('./libs/redis.js');
 //   client: redis_client
 // }),
 // store: sessionstore.createSessionStore(),
-app.set('trust proxy', 1) // trust first proxy
-app.use(session({
-  store: new RedisStore({
-    client: redis_client
-  }),
-  key: 'connect.sid',
-  secret: 'sdfasd55sd4fa1sd',
-  proxy: true,
-  resave: true,
-  saveUninitialized: true,
-  cookie: {
-    secure: false,
-    maxAge: 1000*60*30
-  }
-}));
+// app.set('trust proxy', 1) // trust first proxy
+// app.use(session({
+//   store: new RedisStore({
+//     client: redis_client
+//   }),
+//   key: 'connect.sid',
+//   secret: 'sdfasd55sd4fa1sd',
+//   proxy: true,
+//   resave: true,
+//   saveUninitialized: true,
+//   cookie: {
+//     secure: false,
+//     maxAge: 1000*60*30
+//   }
+// }));
 
 // Static files
 //app.use(express.static('www'));
@@ -95,9 +110,11 @@ app.set('port', (process.env.PORT || 3001));
 
 
 // Assign hostname
-app.set('hostname', (process.env.hostname || 'localhost'));
-// console.log(app.get('hostname'));
+app.set('host', (process.env.host || 'localhost'));
 
-app.listen(app.get('port'), app.get('hostname'), () => {
-  console.log(`Find the server at: http://${app.get('hostname')}:${app.get('port')}/`); // eslint-disable-line no-console
+
+// Binds and listens for connections on the specified host and port.
+app.listen(app.get('port'), () => {
+  // Show where to find the server
+  console.log(`Find the server at: http://${app.get('host')}:${app.get('port')}/`);
 });

@@ -1,7 +1,7 @@
 {
-  "name": "MERN",
+  "name": "Workorder",
   "version": "1.0.0",
-  "description": "Test project for using MongoDB, Express, React and Node.JS",
+  "description": "Workorder system",
   "main": "main.js",
   "author": "Robert",
   "license": "ISC",
@@ -35,8 +35,15 @@
     "underscore": "^1.8.3"
   },
   "scripts": {
-    "start": "npm run server",
+    "start": "nodemon server.js",
     "server": "babel-node server.js",
     "dev": "echo \"This command has been deprecated. Use 'npm start'\" && exit 1"
+  },
+  "facebook": {
+    "app_id": "1785434518447570",
+    "app_secure": "a68f86bd79da73c05791b39415cacaf5"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.14.0"
   }
 }

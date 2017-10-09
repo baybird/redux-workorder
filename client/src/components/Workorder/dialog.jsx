@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import $ from 'jquery';
 
-import {DIALOG_OPEN_ORDER, closeDialog, refreshOrderList} from "../../actions/workorder.js"
-
-//console.log('* 2. Dialog included');
+import {DIALOG_OPEN_ORDER, closeDialog, refreshOrderList, } from "../../actions/workorder.js"
+import {AUTHENTICATED} from "../../actions/account.js"
+import {getApiUrl} from "../../libs/functions.js"
 
 class Dialog extends Component{
   constructor(props){
@@ -11,34 +11,26 @@ class Dialog extends Component{
 
     this.save = this.save.bind(this)
     this.closeDialog = this.closeDialog.bind(this);
-    // console.log('* 2. Dialog init.');
-    // console.log('recevied orderid:' + this.props.store);
   }
 
-  // Called after rendering.
   componentDidMount(){
     this.openDialog();
   }
 
-  // Called after rendering.
   componentDidUpdate(){
-    //console.log('*** 5. Dialog did update.');
     this.getOrderFromAPI();
     this.openDialog();
   }
 
 
   getOrderFromAPI(){
-    //console.log('5) dialog - call API to get order data')
-    //console.log(this.props)
-
     var self = this;
     if (this.props.orderID) {
       var orderId = this.props.orderID;
 
       $.ajax({
         method: "GET",
-        url: "/api/get/"+orderId
+        url: getApiUrl() + "/api/get/"+orderId
       }).done(function(ret){
         self.refs.id.value = ret._id;
         self.refs.subject.value = ret.subject;
@@ -51,31 +43,26 @@ class Dialog extends Component{
   closeDialog(refreshList=false){
     var self = this;
     $( "#dialog" ).slideToggle(function(){
-      self.props.dispatch(closeDialog());
-      if (refreshList) {
-        self.props.dispatch(refreshOrderList());
-      }
+      self.props.dispatch(closeDialog(self.props.authenticated));
 
+      if (refreshList) {
+        self.props.dispatch(refreshOrderList(self.props.authenticated));
+      }
     });
   }
 
   openDialog(){
-    //var that = this;
     $( "#dialog" ).slideToggle(function(){
-      //console.log(that.props);
     });
   }
 
   save(){
-    // console.log("5) dialog - save workorder");
-    //console.log(this.refs.id.value)
-
     var self = this;
 
     if (self.refs.id.value==='') { // new - post
       $.ajax({
         method: "POST",
-        url: "/api/insert",
+        url: getApiUrl() + "/api/insert",
         data: {
           subject: self.refs.subject.value,
           priority: self.refs.priority.value,
@@ -91,7 +78,7 @@ class Dialog extends Component{
     } else { // update - put
       $.ajax({
         method: "PUT",
-        url: "/api/update",
+        url: getApiUrl() + "/api/update",
         data: {
           id: self.refs.id.value,
           subject: self.refs.subject.value,
@@ -100,8 +87,6 @@ class Dialog extends Component{
         }
       }).done(function(ret){
         if(ret.status===true){
-
-          console.log('going to close');
           self.closeDialog(true);// Close dialog
         }else{
           alert(ret.message);
@@ -111,15 +96,10 @@ class Dialog extends Component{
   }
 
   render(){
-    //console.log('5) dialog render');
-    //console.log("type: "+this.props.type);
-    //console.log("*****************************");
-
-
     var prioritys = ['Low','Medium', 'High'];
     var status    = ['Active','Closed','On hold'];
 
-    if (this.props.type===DIALOG_OPEN_ORDER) {
+    if (this.props.type===DIALOG_OPEN_ORDER || (this.props.type === AUTHENTICATED && this.props.authenticated === true ) ) {
       return (
         <div id="dialog" style={{display:'none'}}>
           <div id="dialog_table">

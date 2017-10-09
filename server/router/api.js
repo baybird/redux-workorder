@@ -1,12 +1,15 @@
 // Create instance of express
 var express = require('express');
 
-// instantiate express router
+var https = require('https');
+
+// Instantiate express router
 var router = express.Router();
 
 // requiure js function file
 var func = require('../libs/functions');
-
+var User = require("../libs/user.js");
+  var package = require("../package.json");
 
 // Using MongoDB
 var db = require( '../libs/mongo' );
@@ -15,6 +18,8 @@ var user_collection = db.collection('users');
 var ObjectID = require('mongodb').ObjectID;
 
 // Get one order
+// param1: Route path
+// param1: Route handlers
 router.get('/get/:id', function(req, res, next) {
   var oid = new ObjectID(req.params.id);
 
@@ -28,7 +33,7 @@ router.get('/get/:id', function(req, res, next) {
 });
 
 // Query all orders
-router.get('/:status/:sortingKey/:sortingOrder', function(req, res, next) {
+router.get('/status/:status/:sortingKey/:sortingOrder', function(req, res, next) {
 
   var query = {};
   if (req.params.status.toLowerCase() !='all') {
@@ -84,7 +89,7 @@ router.get('/:status/:sortingKey/:sortingOrder', function(req, res, next) {
 });
 
 // Query with keyword
-router.get('/:status/:sortingKey/:sortingOrder/:keyword', function(req, res, next) {
+router.get('/status/:status/:sortingKey/:sortingOrder/:keyword', function(req, res, next) {
   var query = {};
   if (req.params.keyword) {
     query["subject"] = new RegExp(req.params.keyword, 'i');
@@ -206,6 +211,53 @@ router.put('/update', function(req, res, next){
 
 });
 
+// Facebook
+router.post('/checkFBstatus', function(req, res, next){
+  let accessToken = package.facebook.app_id+"|"+package.facebook.app_secure;
+  let inputToken  = req.body.token;
+  let userID      = req.body.userID;
+  let email       = req.body.email;
+  let url         = 'https://graph.facebook.com/debug_token?input_token='+ inputToken +'&access_token='+accessToken;
+
+  let name        = req.body.name;
+  let picture     = req.body.picture;
+  // console.log('req');
+  // console.log(req.body);
+  // return;
+
+  if (email ==='' || userID ==='') {
+    res.send({authenticated:0, msg:"Invalid login"});
+  }else{
+    function response(data){
+      let response = JSON.parse(data);
+
+      if (response.data.app_id === package.facebook.app_id && response.data.user_id === userID && email !== null) { // If is valid
+        // check with database
+        User.getUserByEmail(email, function(err, data){
+          if (data.length < 1) { // Add user to database
+            User.addUser(email, userID, name, picture);
+          }
+        });
+        res.send({authenticated:1, msg:"OK"});
+      }else{
+        res.send({authenticated:0, msg:"Invalid login"});
+      }
+    }
+
+    https.get(url, (res) => {
+      res.setEncoding('utf8');
+      if (res.statusCode===200) {
+        res.on('data', (d) => {
+          response(d);
+        });
+      }
+    }).on('error', (e) => {
+      response(e);
+    });
+  }
+});
+
+
 // Create new account
 router.post('/signup', function(req, res, next){
   var date = new Date();
@@ -213,13 +265,22 @@ router.post('/signup', function(req, res, next){
   var reStatus = false;
   var reMessage;
 
-  var username = req.body.username;
-  var password = req.body.password;
-  var status   = 1;
+  var username;
+  var password;
+
+  if (req.body.username) {
+    username = req.body.username;
+  }
+
+  if (req.body.password) {
+    password = req.body.password;
+  }
+
+  var authenticated   = 1;
   var create_at= date.toString();
 
   function response(res, reStatus, reMessage){
-    var ret = {status: reStatus, message: reMessage};
+    var ret = {authenticated: reStatus, message: reMessage};
     res.send(ret);
   }
   // test session
@@ -271,19 +332,60 @@ router.post('/signup', function(req, res, next){
   }
 });
 
+// Get user info
+router.get('/userinfo/:email/:userid', function(req, res, next){
+  // console.log(req.params);
+  let email;
+  let password;
+  if (req.params.email) {
+    email = req.params.email;
+  }else{
+    res.send({status:0});
+    return;
+  }
+
+  if (req.params.userid) {
+    password = req.params.userid; // userid is password
+  }else{
+    res.send({status:0});
+    return;
+  }
+
+
+  User.getUserByEmail(email, function(err, data){
+    if (!data[0]) {
+      res.send({status:0});
+      return;
+    }
+
+    if (data[0].password == password) {
+      let user = {
+        name:     data[0].name,
+        email:    data[0].username,
+        picture:  data[0].picture
+      };
+
+      res.send({user: user, status:1});
+    }else{
+      res.send({status:0});
+    }
+  });
+});
+
 // Create new account
 router.get('/checkauth', function(req, res, next){
   // test session
-  // console.log(req.session.token);
+  console.log(req.session.token);
+
   // if (typeof req.session.token != undefined){
   //   req.session.token++;
   // }else{
   //   req.session.token = 0
   // }
-  console.log(req.session.token);
-  console.log('req.session.token');
+  // console.log(req.session.token);
+  // console.log('req.session.token');
   // res.send(req.session.token);
-  res.send({token:1});
+  // res.send({token:1});
 });
 
 module.exports = router;

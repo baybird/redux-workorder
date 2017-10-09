@@ -1,63 +1,76 @@
 import React from 'react';
-import { browserHistory } from 'react-router'
 import {connect} from 'react-redux';
-// import {pushState} from 'react-router';
+import { browserHistory } from 'react-router'
 import $ from 'jquery';
 
-export default function requireAuthentication(Component) {
+import {auth} from '../actions/account.js';
+import {getApiUrl} from "../libs/functions.js"
 
-    class AuthenticatedComponent extends React.Component {
-
-        componentWillMount() {
-            this.checkAuth();
-        }
-
-        componentWillReceiveProps(nextProps) {
-            this.checkAuth();
-            console.log(nextProps)
-        }
-
-        checkAuth() {
-            console.log('check auth');
-
-            $.ajax({
-              method: "GET",
-              url: "/api/checkauth/"
-            }).done(function(ret){
-              if(ret.token!==true){
-                browserHistory.push('/Account/logout');
-              }else{
-                // dispatch();
-              }
-            })
-
-
-            // if (!this.props.isAuthenticated) {
-            //     let redirectAfterLogin = this.props.location.pathname;
-            //     this.props.dispatch(pushState(null, `/login?next=${redirectAfterLogin}`));
-            // }
-        }
-
-        render() {
-
-            return (
-                <div>
-                    {
-                        this.props.isAuthenticated === true?
-                        <Component {...this.props}/>:
-                        "Please log in"
-                    }
-                </div>
-            )
-
-        }
+class AuthenticatedComponent extends React.Component {
+    constructor(props){
+        super(props);
+        this.authenticated = false;
     }
 
-    const mapStateToProps = (state) => ({
-        // token: state.auth.token,
-        // userName: state.auth.userName,
-        isAuthenticated: false
-    });
+    componentWillMount() {
+        this.checkAuth();
+    }
 
-    return connect(mapStateToProps)(AuthenticatedComponent);
+    checkAuth() {
+        let self = this;
+
+        $.ajax({
+          method: "POST",
+          url: getApiUrl() +"/api/checkFBstatus",
+          data: {
+            token: localStorage.getItem("token"),
+            userID:localStorage.getItem("userID"),
+            email: localStorage.getItem("email")
+          }
+        }).done(function(ret){
+            if(ret.authenticated!==1){
+                browserHistory.push('/Account/login');
+            }else{
+                self.authenticated = true;
+                self.props.dispatch(auth(localStorage.getItem("email"), 1));
+            }
+        })
+    }
+
+    checkAuth2() {
+        console.log("check auth - checkAuth2");
+
+        $.ajax({
+          method: "POST",
+          url: getApiUrl() + "/api/checkFBstatus",
+          data: {
+            token: localStorage.getItem("token"),
+            userID:localStorage.getItem("userID"),
+            email: localStorage.getItem("email")
+          }
+        }).done(function(ret){
+            if(ret.authenticated!==1){
+                browserHistory.push('/Account/login');
+            }
+        })
+    }
+
+    render() {
+        if(this.authenticated === true){
+            return this.props.children
+        }else{
+            return (
+                <div></div>
+            )
+        }
+    }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        email: state.account.email,
+        authenticated: state.account.authenticated
+    }
+};
+
+export default connect(mapStateToProps)(AuthenticatedComponent);

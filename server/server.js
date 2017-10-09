@@ -5,7 +5,7 @@ var app = express();
 
 // providing a Connect/Express middleware that can be used to enable CORS with various options.
 // CORS - Cross-origin resource sharing
-var cors    = require('cors');
+var cors = require('cors');
 app.use(cors());
 
 // ExpressJS/Mongoose Session Storage
@@ -92,7 +92,6 @@ app.use('/api', rest_api);
 // var router_page = require('./router/page');
 // app.use('/',router_page);
 
-
 // Socket.io
 var io = require('socket.io')(server);
 io.on('connection', function (socket) {
@@ -103,15 +102,12 @@ io.on('connection', function (socket) {
   });
 });
 
-
 // Assign listen port
 app.set('port', (process.env.PORT || 3001));
 // console.log(process.env.PORT);
 
-
 // Assign hostname
 app.set('host', (process.env.host || 'localhost'));
-
 
 // Binds and listens for connections on the specified host and port.
 app.listen(app.get('port'), () => {

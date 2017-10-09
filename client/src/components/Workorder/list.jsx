@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux'
 import $ from 'jquery';
 
-import {dialogOpenOrder, REFRESH_ORDER_LIST, SEARCH_ORDER } from '../../actions/workorder.js';
-
-// import Dialog from '../../containers/contDialog.js'
+import {dialogOpenOrder, DIALOG_OPEN_ORDER, REFRESH_ORDER_LIST, SEARCH_ORDER } from '../../actions/workorder.js';
+import {getApiUrl} from "../../libs/functions.js"
 
 class List extends Component {
     constructor(props) {
@@ -13,16 +13,13 @@ class List extends Component {
 
       this.state = {
         items: [],
-        apiUrl: '/api'
+        apiUrl: getApiUrl() + '/api'
       };
     }
 
     apiGetList(keyword, status, sortingKey, sortingOrder) {
-        // console.log('*** api called for worklist');
-
-
         // Setting default values
-        // By doing it on this way is to suppoert the compatibility in IE
+        // To suppoert the compatibility in IE
         if (typeof keyword === 'undefined') {
           keyword = null;
         }
@@ -39,7 +36,7 @@ class List extends Component {
           sortingOrder = 1;
         }
 
-        var apiUrl = this.state.apiUrl + '/' + status + '/' + sortingKey + '/' + sortingOrder;
+        var apiUrl = this.state.apiUrl + '/status/' + status + '/' + sortingKey + '/' + sortingOrder;
 
         if (keyword) {
           apiUrl += '/' + keyword;
@@ -81,7 +78,6 @@ class List extends Component {
 
       // Call getListApi
       this.apiGetList(keyword, status, field, sortingKeyArr[field]);
-
     }
 
     sortingIcon(num){
@@ -93,16 +89,11 @@ class List extends Component {
     }
 
     openOrder(e, id){
-      //console.log('0) UI send an action' );
-      this.props.dispatch(dialogOpenOrder(id));
-      //render(<Dialog orderId={id}/>, document.getElementById('dialog_area'));
+      this.props.dispatch(dialogOpenOrder(id, this.props.authenticated));
     }
 
     componentWillReceiveProps(nextProps)
     {
-      // console.log('0) componentWillReceiveProps' );
-      // console.log(nextProps);
-
       if (nextProps.type === REFRESH_ORDER_LIST) {
         this.apiGetList();
       }else if (nextProps.type === SEARCH_ORDER) {
@@ -110,16 +101,12 @@ class List extends Component {
         this.apiGetList(nextProps.keyword, nextProps.status);
       }
     }
-    // Called before rendering on both server and client side.
+
     componentWillMount(){
-      //console.log('*** worklist will mount');
       this.apiGetList();
     }
 
     render(){
-      // console.log("*** worklist render");
-      // console.log(this.props);
-
       var sortingOrderTicket    = (<i className="fa fa-sort" aria-hidden="true"></i>);
       var sortingOrderPriority  = (<i className="fa fa-sort" aria-hidden="true"></i>);
       var sortingOrderSubject   = (<i className="fa fa-sort" aria-hidden="true"></i>);
@@ -149,7 +136,7 @@ class List extends Component {
         }
       }
 
-      var that = this;
+      var self = this;
 
       return (
         <table className='list'>
@@ -173,7 +160,7 @@ class List extends Component {
                   <td>{item.subject}</td>
                   <td>{item.duration}</td>
                   <td>{typeof item.status==='undefined'?'':item.status.charAt(0).toUpperCase() + item.status.slice(1)} </td>
-                  <td><button type="button" onClick={ (e) => that.openOrder(e, item._id.toString())} className="btn btn_small">Modify</button></td>
+                  <td><button type="button" onClick={ (e) => self.openOrder(e, item._id.toString())} className="btn btn_small">Modify</button></td>
                 </tr>
               )
             })
@@ -185,4 +172,31 @@ class List extends Component {
 }// end class
 
 
-export default List;
+const mapStateToProps = (state) => {
+  if (state.workorder.type === DIALOG_OPEN_ORDER) {
+    return {
+      type:           state.workorder.type,
+      orderID:        state.workorder.orderID,
+      authenticated:  state.account.authenticated
+    }
+  }else if(state.workorder.type === SEARCH_ORDER){
+    return {
+      type:           state.workorder.type,
+      keyword:        state.workorder.keyword,
+      status:         state.workorder.status,
+      authenticated:  state.account.authenticated
+    }
+  }else{
+    return {
+      type:           state.workorder.type,
+      authenticated:  state.account.authenticated
+    }
+  }
+}
+
+
+const contWorklist = connect(
+  mapStateToProps
+)(List)
+
+export default contWorklist

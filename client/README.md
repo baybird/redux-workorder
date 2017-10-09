@@ -12,6 +12,9 @@ $ npm run build
 #run production
 ```
 nodemon production.js
+
+
+
 ```
 
 #run development
@@ -25,5 +28,5 @@ npm start
 $ SET PORT=80
 
 #Linux
-$ export PORT=3005 
+$ export PORT=3005
 ```

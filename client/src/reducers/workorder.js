@@ -1,33 +1,45 @@
-import {DIALOG_OPEN_ORDER, SEARCH_ORDER } from '../actions/workorder.js';
+import {DIALOG_OPEN_ORDER, SEARCH_ORDER, CLOSE_DIALOG } from '../actions/workorder.js';
 
 
 function dialog(state = {type:"", orderID:''}, action) {
-  // console.log('3) reducer received action:');
-
-
   switch (action.type) {
     case DIALOG_OPEN_ORDER:
-        return Object.assign(
+        return (
           {},
           state,
           {
             type: action.type,
-            orderID: action.orderID
+            orderID: action.orderID,
+            authenticated: action.authenticated
+          }
+        );
+
+    case CLOSE_DIALOG:
+        return (
+          {},
+          state,
+          {
+            type: action.type,
+            authenticated: action.authenticated
           }
         );
 
     case SEARCH_ORDER:
-        // console.log('4) reducert - return state')
-        // console.log(action.keyword);
         return (
+          {},
+          state,
           {
             type: action.type,
             keyword: action.keyword,
-            status: action.status
+            status: action.status,
+            authenticated: action.authenticated
           }
         );
     default:
-        return {type: action.type}
+        return {
+          type: action.type,
+          authenticated: action.authenticated
+        }
 
   }
 }

@@ -20,8 +20,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  actions : bindActionCreators(actionCreators, dispatch)
+    actions : bindActionCreators({actionCreators}, dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProtectedView);
-

@@ -7,11 +7,18 @@ import Dialog from '../components/Workorder/dialog.jsx'
 // into the props you want to pass to a presentational
 // component
 const mapStateToProps = (state) => {
-  //console.log('4) container for dialog');
-  //console.log(state.workorder);
+  // console.log('4) container for dialog');
+  // console.log(state);
+
+  let authenticated = 0;
+  if (state.workorder.authenticated ===1 || state.account.authenticated ===1) {
+    authenticated = 1;
+  }
+
   return {
     type: state.workorder.type,
-    orderID: state.workorder.orderID
+    orderID: state.workorder.orderID,
+    authenticated: authenticated
   }
 }
 

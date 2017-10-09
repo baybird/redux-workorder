@@ -7,46 +7,40 @@ export const CLOSE_DIALOG         = 'CLOSE_DIALOG';
 export const SEARCH_ORDER         = 'SEARCH_ORDER';
 
 // Action creator
-export function dialogOpenOrder(orderID){
-  // console.log('1) action recevied open dialog - orderID:' + orderID)
-
+export function dialogOpenOrder(orderID, authenticated){
   return {
     type: DIALOG_OPEN_ORDER,
-    orderID: orderID
+    orderID: orderID,
+    authenticated: authenticated
   };
 }
 
-export function closeDialog(){
-  // console.log('1) action recevied close dialog')
-
+export function closeDialog(authenticated){
   return {
-    type: CLOSE_DIALOG
+    type: CLOSE_DIALOG,
+    authenticated: authenticated
   };
 }
 
 export function dialogUpdateOrder(orderID){
-  // console.log('1) action recevied update dialog - orderID:' + orderID)
-
   return {
     type: DIALOG_UPDATE_ORDER,
     orderID: orderID
   };
 }
 
-export function refreshOrderList(){
-  // console.log('1) action recevied refresh list')
+export function refreshOrderList(authenticated){
   return {
-    type: REFRESH_ORDER_LIST
+    type: REFRESH_ORDER_LIST,
+    authenticated: authenticated
   }
 }
 
-export function search(keyword, status){
-  // console.log('2) action recevied for search order')
-  // console.log(keyword+ ", "+status);
-
+export function search(keyword, status, authenticated){
   return {
     type: SEARCH_ORDER,
     keyword:keyword,
-    status:status
+    status:status,
+    authenticated: authenticated
   }
 }

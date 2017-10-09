@@ -99,17 +99,16 @@ class Account extends Component{
     let name;
     let picture;
 
-    // console.log('response');
-    // console.log(response);
     if (response) {
       name    = response.name;
       email   = response.email;
-      picture = response.picture.data.url;
-      // console.log('picture');
-      // console.log(picture);
+      if(response.hasOwnProperty('picture')){
+        picture = response.picture.data.url;
+      }
     }
 
     window.FB.getLoginStatus(function(result){
+      // console.log('result*************');
       // console.log(result);
       if (result.status==='connected' && email !== undefined) {
         self.facebookVerifyAccessToken(result.authResponse.accessToken, result.authResponse.userID, email, name, picture);

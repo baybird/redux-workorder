@@ -102,6 +102,7 @@ class Account extends Component{
     if (response) {
       name    = response.name;
       email   = response.email;
+      
       if(response.hasOwnProperty('picture')){
         picture = response.picture.data.url;
       }

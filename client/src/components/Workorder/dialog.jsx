@@ -28,15 +28,20 @@ class Dialog extends Component{
     if (this.props.orderID) {
       var orderId = this.props.orderID;
 
-      $.ajax({
-        method: "GET",
-        url: getApiUrl() + "/api/get/"+orderId
-      }).done(function(ret){
+      fetch(getApiUrl() + "/api/get/"+orderId).then(res=>{
+        console.log(res)
+        if(res.ok===true){
+          return res.json()
+        }else{
+          throw new Error(res.statusText)
+        }
+      }).then(ret=>{
         self.refs.id.value = ret._id;
         self.refs.subject.value = ret.subject;
         self.refs.priority.value = ret.priority;
         self.refs.status.value = ret.status;
       })
+
     }
   }
 

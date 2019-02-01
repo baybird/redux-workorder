@@ -99,14 +99,14 @@ class Account extends Component{
     let name;
     let picture;
 
-    // console.log('response');
-    // console.log(response);
     if (response) {
       name    = response.name;
       email   = response.email;
-      picture = response.picture.data.url;
-      // console.log('picture');
-      // console.log(picture);
+
+      if(response.hasOwnProperty('picture')){
+        picture = response.picture.data.url;
+      }
+
     }
 
     window.FB.getLoginStatus(function(result){

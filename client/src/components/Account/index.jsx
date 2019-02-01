@@ -110,6 +110,7 @@ class Account extends Component{
     }
 
     window.FB.getLoginStatus(function(result){
+      // console.log('result*************');
       // console.log(result);
       if (result.status==='connected' && email !== undefined) {
         self.facebookVerifyAccessToken(result.authResponse.accessToken, result.authResponse.userID, email, name, picture);

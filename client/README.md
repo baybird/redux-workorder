@@ -4,22 +4,21 @@
 $ npm start
 ```
 
+#run on dev mode.
+```
+npm start
+```
+
 #Create a production build
 ```
 $ npm run build
 ```
 
-#run production
+#run on production
 ```
-nodemon production.js
+$ npm install -g serve
+$ serve -s build
 
-
-
-```
-
-#run development
-```
-npm start
 ```
 
 #Change port for development
